@@ -1,0 +1,32 @@
+((version, modules) => {
+  const {fs, glob, path, crypto, constants} = modules;
+
+  if (version === '1.0.0') {
+    // Changes:
+    // 1. Assets saves to "%appdata%/assets" instead of "`__dirname`/data/apps".
+    const appsPath = path.join(__dirname, 'data/apps');
+    const apps = glob.sync(path.join(appsPath, '/*/'));
+    for (let app of apps) {
+      const appId = asset.replace(/.*\/(.*)\/$/, '$1');
+      const assets = glob.sync(path.join(asset, '/*'));
+      for (let asset of assets) {
+        const assetId = asset.replace(/.*\/(.*)\/$/, '$1');
+        const newPath = path.join(constants.appdata, 'apps', md5(appId), md5(assetId));
+        fs.moveSync(asset, newPath);
+      }
+    }
+    fs.removeSync(appsPath);
+  } 
+
+  function md5(value) {
+    return crypto.createHash('md5').update(value).digest('hex');
+  }
+})(%USER_VERSION%, {
+  path: require('path'),
+  fs: require('fs-extra'),
+  glob: require('glob'),
+  crypto: require('crypto'),
+  constants: {
+    appdata: require('appdata-path')('brains-battle')
+  }
+});

@@ -1,3 +1,14 @@
+REQUIRES
+  appdata-path
+  glob
+  fs-extra
+END
+
+INPUT
+  (string) %USER_VERSION%
+END
+
+RUNTIME
 ((version, modules) => {
   const {fs, glob, path, crypto, constants} = modules;
 
@@ -29,4 +40,5 @@
   constants: {
     appdata: require('appdata-path')('brains-battle')
   }
-});
+})
+END
